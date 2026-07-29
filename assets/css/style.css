@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+/* Animations and custom transitions */
+@keyframes hero-img-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes float-badge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.animate-hero-float {
+    animation: hero-img-float 6s ease-in-out infinite;
+}
+
+.animate-badge-float {
+    animation: float-badge 4s ease-in-out infinite;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Custom transitions and scrollbar */
+.transition-all-300 {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ESewa colors */
+.bg-esewa {
+    background-color: #60BB46;
+}
+.hover\:bg-esewa-dark:hover {
+    background-color: #4a9a33;
+}
