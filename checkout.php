@@ -49,13 +49,21 @@ if ($isFormSubmission) {
         header("Location: " . SITE_URL . "/payment/esewa_initiate.php"); exit();
     }
     $full_name = trim($_POST['full_name'] ?? '');
-    $email     = trim($_POST['email'] ?? '');
+    $email     = strtolower(trim($_POST['email'] ?? ''));
     $phone     = trim($_POST['phone'] ?? '');
     $address   = trim($_POST['address'] ?? '');
     $city      = trim($_POST['city'] ?? '');
     $notes     = trim($_POST['notes'] ?? '');
-    if (strlen($full_name)<3)                          $errors['full_name'] = 'Full name is required.';
-    if (!filter_var($email,FILTER_VALIDATE_EMAIL))     $errors['email']     = 'Valid email is required.';
+    if (strlen($full_name) < 3) {
+        $errors['full_name'] = 'Full name must be at least 3 characters.';
+    } elseif (!preg_match('/^[a-zA-Z\s\.\'\-]+$/', $full_name)) {
+        $errors['full_name'] = 'Full name must contain letters only.';
+    }
+    if (empty($email)) {
+        $errors['email'] = 'Email address is required.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
+        $errors['email'] = 'Valid email address is required (e.g. name@example.com).';
+    }
     if (!preg_match('/^(98|97|96)\d{8}$/',$phone))    $errors['phone']     = 'Valid 10-digit Nepal phone required.';
     if (empty($address))                               $errors['address']   = 'Delivery address is required.';
     if (empty($city))                                  $errors['city']      = 'City is required.';

@@ -5,15 +5,18 @@ require_once '../includes/auth_check.php';
 if (isLoggedIn()) { header("Location: " . SITE_URL . "/index.php"); exit(); }
 $error = ''; $email = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email    = trim($_POST['email'] ?? '');
+    $email    = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
     if (empty($email) || empty($password)) {
         $error = 'Please enter both email and password.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
+        $error = 'Please enter a valid email address.';
     } else {
         $stmt = $conn->prepare("SELECT id,full_name,email,password,role FROM users WHERE email=?");
         $stmt->bind_param("s", $email); $stmt->execute();
         $user = $stmt->get_result()->fetch_assoc();
         if ($user && password_verify($password, $user['password'])) {
+            session_regenerate_id(true);
             $_SESSION['user_id']   = $user['id'];
             $_SESSION['full_name'] = $user['full_name'];
             $_SESSION['email']     = $user['email'];
@@ -84,9 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <?php endif; ?>
     
-    <div class="bg-blue-50 border border-blue-100 text-blue-800 rounded-lg p-3 text-xs mb-5">
+    <!-- <div class="bg-blue-50 border border-blue-100 text-blue-800 rounded-lg p-3 text-xs mb-5">
         <strong>Demo Admin:</strong> admin@shilpanepal.com / Admin@1234
-    </div>
+    </div> -->
     
     <form method="POST" class="space-y-4">
         <div>

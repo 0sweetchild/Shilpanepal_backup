@@ -8,14 +8,14 @@ $successMsg = '';
 $errorMsg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_message'])) {
     $name = trim($_POST['name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
+    $email = strtolower(trim($_POST['email'] ?? ''));
     $subject = trim($_POST['subject'] ?? '');
     $message = trim($_POST['message'] ?? '');
     
     if (empty($name) || empty($email) || empty($message)) {
         $errorMsg = 'Please fill in all required fields.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errorMsg = 'Please enter a valid email address.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
+        $errorMsg = 'Please enter a valid email address (e.g. name@example.com).';
     } else {
         $successMsg = 'Thank you for reaching out! Your message has been received, and our support team will get back to you within 24 hours.';
     }

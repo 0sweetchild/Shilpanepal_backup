@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>E-Commerce Cart</title>
+</head>
+<body>
+
+    <h1>Product List</h1>
+
+    <div id="products"></div>
+
+    <h2>Shopping Cart</h2>
+    <div id="cart"></div>
+
+    <h3>Total: Rs. <span id="total">0</span></h3>
+
+    <script>
+        // Product list
+        const products = [
+            { id: 1, name: "Laptop", price: 80000 },
+            { id: 2, name: "Mobile Phone", price: 30000 },
+            { id: 3, name: "Headphones", price: 3000 },
+            { id: 4, name: "Keyboard", price: 2000 }
+        ];
+
+        // Cart array
+        let cart = [];
+
+        // Display products
+        function displayProducts() {
+            const productContainer = document.getElementById("products");
+
+            products.forEach(product => {
+                productContainer.innerHTML += `
+                    <div>
+                        <h3>${product.name}</h3>
+                        <p>Price: Rs. ${product.price}</p>
+                        <button onclick="addToCart(${product.id})">
+                            Add to Cart
+                        </button>
+                    </div>
+                    <hr>
+                `;
+            });
+        }
+
+        // Add product to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+
+            cart.push(product);
+
+            displayCart();
+        }
+
+        // Display cart items
+        function displayCart() {
+            const cartContainer = document.getElementById("cart");
+            const totalElement = document.getElementById("total");
+
+            cartContainer.innerHTML = "";
+
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price;
+
+                cartContainer.innerHTML += `
+                    <div>
+                        <p>
+                            ${item.name} - Rs. ${item.price}
+                            <button onclick="removeFromCart(${index})">
+                                Remove
+                            </button>
+                        </p>
+                    </div>
+                `;
+            });
+
+            totalElement.innerText = total;
+        }
+
+        // Remove item from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+
+            displayCart();
+        }
+
+        // Initially display products
+        displayProducts();
+    </script>
+
+</body>
+</html>

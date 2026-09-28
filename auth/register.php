@@ -6,13 +6,21 @@ if (isLoggedIn()) { header("Location: " . SITE_URL . "/index.php"); exit(); }
 $errors = []; $input = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input['full_name'] = trim($_POST['full_name'] ?? '');
-    $input['email']     = trim($_POST['email'] ?? '');
+    $input['email']     = strtolower(trim($_POST['email'] ?? ''));
     $input['phone']     = trim($_POST['phone'] ?? '');
     $input['address']   = trim($_POST['address'] ?? '');
     $input['password']  = $_POST['password'] ?? '';
     $input['confirm']   = $_POST['confirm_password'] ?? '';
-    if (strlen($input['full_name']) < 3) $errors['full_name'] = 'Full name must be at least 3 characters.';
-    if (!filter_var($input['email'], FILTER_VALIDATE_EMAIL)) $errors['email'] = 'Please enter a valid email address.';
+    if (strlen($input['full_name']) < 3) {
+        $errors['full_name'] = 'Full name must be at least 3 characters.';
+    } elseif (!preg_match('/^[a-zA-Z\s\.\'\-]+$/', $input['full_name'])) {
+        $errors['full_name'] = 'Full name must contain letters only.';
+    }
+    if (empty($input['email'])) {
+        $errors['email'] = 'Email address is required.';
+    } elseif (!filter_var($input['email'], FILTER_VALIDATE_EMAIL) || !preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $input['email'])) {
+        $errors['email'] = 'Please enter a valid email address (e.g. name@example.com).';
+    }
     if (!preg_match('/^(98|97|96)\d{8}$/', $input['phone'])) $errors['phone'] = 'Enter a valid Nepal phone number.';
     if (empty($input['address'])) $errors['address'] = 'Address is required.';
     if (strlen($input['password']) < 8) $errors['password'] = 'Password must be at least 8 characters.';
